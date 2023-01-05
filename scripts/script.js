@@ -11,7 +11,7 @@ const createMainList = async () => {
     window.scrollTo(0, 0);
     loadAnimation();
     const listsArray = await getDataLists();
-    section.innerHTML = '<h1>MAIN LIST</h1>';
+    section.innerHTML = '<h1>BESTSELLERS</h1>';
     listsArray.forEach((list,i) => {
         const cardDiv = document.createElement('div')
         cardDiv.innerHTML =`<h2>${list.display_name}</h2><p>Oldest book: ${list.oldest_published_date}</p><p>Newest book: ${list.newest_published_date}</p><p>Updated: ${list.updated}</p><button id="button${i}"type="button">BRING ME IN!</button>`
