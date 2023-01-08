@@ -1,3 +1,30 @@
+
+//Firebase: 
+const firebaseConfig = {
+    apiKey: "AIzaSyAfcU0w73LZE-R19NnH_vxNiiWLjGcSWvk",
+    authDomain: "nyt-library-82f86.firebaseapp.com",
+    projectId: "nyt-library-82f86",
+    storageBucket: "nyt-library-82f86.appspot.com",
+    messagingSenderId: "950393658023",
+    appId: "1:950393658023:web:065726245adb7871f3d982"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let userAuth = false;
+
+//Listener para saber que usuario está logeado:
+firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+        console.log(`Está en el sistema:${user.email} ${user.uid}`);
+        userAuth = true;
+    } else {
+        console.log("no hay usuarios en el sistema");
+    }
+});
+
+//Pintado de listas
 const section = document.getElementById('list');
 const loadAnimation = () => section.innerHTML = `<div><img id="load" src="./assets/loading.gif" alt="loading..."></div>`;
 const getDataLists = async () => {
@@ -10,8 +37,8 @@ const createMainList = async () => {
     loadAnimation();
     const listsArray = await getDataLists();
     section.innerHTML = '<h1>BESTSELLERS</h1>';
-    listsArray.forEach((list,i) => section.innerHTML +=`<div><h2>${list.display_name}</h2><p>Oldest book: ${list.oldest_published_date}</p><p>Newest book: ${list.newest_published_date}</p><p>Updated: ${list.updated}</p><button id="button${i}"type="button">BRING ME IN!</button></div>`);
-    listsArray.forEach((list,i) => document.getElementById(`button${i}`).addEventListener('click', ()=> createBooksList(list.list_name_encoded)));
+    listsArray.forEach((list, i) => section.innerHTML += `<div><h2>${list.display_name}</h2><p>Oldest book: ${list.oldest_published_date}</p><p>Newest book: ${list.newest_published_date}</p><p>Updated: ${list.updated}</p><button id="button${i}"type="button">BRING ME IN!</button></div>`);
+    listsArray.forEach((list, i) => document.getElementById(`button${i}`).addEventListener('click', () => createBooksList(list.list_name_encoded)));
 }
 const getDataBooks = async (code) => {
     const rawDataBooks = await fetch(`https://api.nytimes.com/svc/books/v3/lists/current/${code}.json?api-key=hksRlq4zXFu3Itqjruc8igFoj22s4ZRR`)
@@ -23,7 +50,98 @@ const createBooksList = async (listCode) => {
     loadAnimation();
     const booksList = await getDataBooks(listCode);
     section.innerHTML = `<h1>${booksList.list_name}</h1><button id="back-button" type="button">&#60 BRING ME BACK!</button>`;
-    booksList['books'].forEach(book => section.innerHTML += `<div><h2>#${book.rank} ${book.title}</h2><img src="${book.book_image}" alt="book cover"><p>Weeks on list: ${book.weeks_on_list}</p><p>${book.description}</p><a href="${book.amazon_product_url}" target="_blank"><button>BUY!</button></a></div>`)
+    booksList['books'].forEach((book, i) => section.innerHTML += `<div><h2>#${book.rank} ${book.title}</h2><img src="${book.book_image}" alt="book cover"><p>Weeks on list: ${book.weeks_on_list}</p><p>${book.description}</p><a href="${book.amazon_product_url}" target="_blank"><button>BUY!</button></a><button id="fav${i}">&#9829</button></div>`)
     document.getElementById('back-button').onclick = createMainList;
+    booksList['books'].forEach((book, i) => document.getElementById(`fav${i}`).addEventListener('click', () => {
+        let bookDetails = {rank: book.rank, title: book.title, image: book.book_image, weeks: book.weeks_on_list, description: book.description, amazon: book.amazon_product_url};
+        console.log(bookDetails)
+    }))
 }
-createMainList();
+
+//Función que crea nuevo usuario:
+const createUser = (email, password) => {
+    firebase.auth().createUserWithEmailAndPassword(email,password)
+        .then((credential) => {
+            let user = credential.user;
+            console.log(`${user.email} registrado con ID: ${user.uid}`)
+            alert(`registrado ${user.email} con ID ${user.uid}`)
+            db.collection('users')
+                .add({
+                    id: user.uid,
+                    email: user.email
+                })
+                .then((userDoc) => console.log(`New user document with ID: ${user.uid}`))
+                .catch((error) => console.error("Error adding document: ", error))
+        })
+        .catch((error) => {
+            console.log("Error" + error.message)
+        });
+};
+//Función para logearse:
+const loginUser = (email, password) => {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((credential) => {
+            let user = credential.user;
+            console.log(`${user.email} está en el sistema (ID: ${user.uid})`)
+            alert(`${user.email} está en el sistema (ID: ${user.uid})`)
+            console.log('USER', user)
+        })
+        .catch((error) => {
+            console.log(error.code);
+            console.log(error.message)
+        })
+}
+
+//Función para deslogearse:
+const logOut = () => {
+    let user = firebase.auth().currentUser;
+    firebase.auth().signOut()
+        .then(() =>{
+            console.log(user.mail + 'is out')
+        })
+        .catch((error) => {
+            console.log('Error: ' + error)
+        });
+    location.reload();
+}
+
+//Función para añadir favorito
+// const addFav = () =>
+
+
+if (document.title === 'NYT Library') {
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            document.getElementById('authaccess').innerHTML = `<button class="getout">Log out</button>`
+            document.querySelector('.getout').onclick = logOut;
+        }
+    });
+    createMainList();
+}
+
+if (document.title === 'Login') {
+    document.getElementById("formlog").addEventListener("submit", function (event) {
+        event.preventDefault();
+        let mail = event.target.elements.logemail.value;
+        let pass = event.target.elements.logpassword.value;
+        loginUser(mail, pass)
+    })
+    const openButton = document.getElementById('openregistration');
+    const registration = document.getElementById('register');
+    openButton.onclick = () => registration.style.display = 'block';
+    document.getElementById('formreg').addEventListener('submit', (event) =>{
+        event.preventDefault();
+        let mail = event.target.elements.email.value;
+        let password = event.target.elements.password1.value;
+        let checkPass = event.target.elements.password2.value;
+        password === checkPass ? createUser(mail, password) : alert('Error: you put differents passwords')
+    })
+    document.getElementById('outdiv').innerHTML = `<button class="getout">Log out</button>`;
+    document.querySelector('.getout').onclick = logOut;
+
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            openButton.style.display = 'none';
+        }
+    });
+}
