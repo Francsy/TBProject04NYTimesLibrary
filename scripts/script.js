@@ -6,21 +6,23 @@ const firebaseConfig = {
     storageBucket: "nyt-library-82f86.appspot.com",
     messagingSenderId: "950393658023",
     appId: "1:950393658023:web:065726245adb7871f3d982"
-};
+}
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 let userAuth = false;
 
 //Listener para saber que usuario está logeado:
-//Meter en async awayt??
+//Meter en async await??
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         console.log(`Está en el sistema:${user.email} ${user.uid}`);
         userAuth = true;
+        getProfileImg(firebase.auth().currentUser.uid)
     } else {
         console.log("no hay usuarios en el sistema");
     }
-});
+})
 
 //Función para logearse:
 const loginUser = (email, password) => {
@@ -51,7 +53,7 @@ const logOut = () => {
 }
 
 //Función que crea nuevo usuario:
-const createUser = (email, password) => {
+const createUser = (email, password, file) => {
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((credential) => {
             let user = credential.user;
@@ -60,7 +62,8 @@ const createUser = (email, password) => {
             db.collection('users')
                 .add({
                     id: user.uid,
-                    email: user.email
+                    email: user.email,
+                    profile: file.name
                 })
                 .then((userDoc) => console.log(`New user document with ID: ${user.uid}`))
                 .catch((error) => console.error("Error adding document: ", error))
@@ -68,7 +71,8 @@ const createUser = (email, password) => {
         .catch((error) => {
             console.log("Error" + error.message)
         });
-};
+        firebase.storage().ref().child(`${email}-${file.name}`).put(file)
+}
 
 // Función para añadir favorito a firebase collection
 function addFav(userID, bookObject) {
@@ -94,6 +98,7 @@ const getDataLists = async () => {
     const dataMainList = await rawDataMainList.json();
     return dataMainList.results;
 }
+
 const createMainList = async () => {
     window.scrollTo(0, 0);
     loadAnimation();
@@ -102,24 +107,28 @@ const createMainList = async () => {
     listsArray.forEach((list, i) => section.innerHTML += `<div><h2>${list.display_name}</h2><p>Oldest book: ${list.oldest_published_date}</p><p>Newest book: ${list.newest_published_date}</p><p>Updated: ${list.updated}</p><button id="button${i}"type="button">BRING ME IN!</button></div>`);
     listsArray.forEach((list, i) => document.getElementById(`button${i}`).addEventListener('click', () => createBooksList(list.list_name_encoded)));
 }
+
 const getDataBooks = async (code) => {
     const rawDataBooks = await fetch(`https://api.nytimes.com/svc/books/v3/lists/current/${code}.json?api-key=hksRlq4zXFu3Itqjruc8igFoj22s4ZRR`)
     const dataBooks = await rawDataBooks.json();
     return dataBooks.results;
 }
+
 const createBooksList = async (listCode) => {
     window.scrollTo(0, 0);
     loadAnimation();
     const booksList = await getDataBooks(listCode);
     section.innerHTML = `<h1>${booksList.list_name}</h1><button id="back-button" type="button">&#60 BRING ME BACK!</button>`;
-    booksList['books'].forEach((book, i) => section.innerHTML += `<div><h2>#${book.rank} ${book.title}</h2><img src="${book.book_image}" alt="book cover"><p>Weeks on list: ${book.weeks_on_list}</p><p>${book.description}</p><a href="${book.amazon_product_url}" target="_blank"><button>BUY!</button></a><button id="fav${i}">&#9829</button></div>`)
+    booksList['books'].forEach((book, i) => section.innerHTML += `<div><h2>#${book.rank} ${book.title}</h2><img src="${book.book_image}" alt="book cover"><p>Weeks on list: ${book.weeks_on_list}</p><p>${book.description}</p><a href="${book.amazon_product_url}" target="_blank"><button>BUY!</button></a><button class="favbuttons" id="fav${i}">&#9829</button></div>`)
     document.getElementById('back-button').onclick = createMainList;
     booksList['books'].forEach((book, i) => document.getElementById(`fav${i}`).addEventListener('click', () => {
         let bookDetails = { amazon: book.amazon_product_url, description: book.description, image: book.book_image, title: book.title };
         console.log(bookDetails)
         addFav(firebase.auth().currentUser.uid, bookDetails)
     }))
+    booksList['books'].forEach((book, i) => firebase.auth().onAuthStateChanged((user) => !user ? document.getElementById(`fav${i}`).style.display = 'none': document.getElementById(`fav${i}`).style.display = 'inline'))
 }
+
 const createFavList = (userID) => {
     window.scrollTo(0, 0);
     section.innerHTML = `<h1>TUS FAVORITOS</h1><button id="backf-button" type="button">&#60 BRING ME BACK!</button>`;
@@ -136,13 +145,33 @@ const createFavList = (userID) => {
         });
 }
 
+const getProfileImg = (userID) => {
+    db.collection('users')
+    .where('id', '==', userID)
+    .get()
+    .then((snapshot) => {
+        snapshot.forEach((doc) => {
+            let email = doc.data().email
+            let imgUrl = doc.data().profile
+            firebase.storage().ref().child(`${email}-${imgUrl}`)
+            .getDownloadURL()
+            .then(function (url) {
+                document.querySelector(".profileimg").innerHTML = `<img src="${url}">`
+              })
+              .catch(function (error) {
+                console.log("error encountered with the profile img");
+              });
+        });
+    });
+}
+
 if (document.title === 'NYT Library') {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             document.getElementById('authaccess').innerHTML = `<button class="getout">Log out</button>`
             document.querySelector('.getout').onclick = logOut;
             document.getElementById('favlist').style.display = "block";
-        }
+        } 
     });
     createMainList();
     document.getElementById('favlist').addEventListener('click', ()=> createFavList(firebase.auth().currentUser.uid))
@@ -163,7 +192,8 @@ if (document.title === 'Login') {
         let mail = event.target.elements.email.value;
         let password = event.target.elements.password1.value;
         let checkPass = event.target.elements.password2.value;
-        password === checkPass ? createUser(mail, password) : alert('Error: you put differents passwords')
+        let file = event.target.elements.file.files[0];
+        password === checkPass ? createUser(mail, password, file) : alert('Error: you put differents passwords')
     })
     document.getElementById('outdiv').innerHTML = `<button class="getout">Log out</button>`;
     document.querySelector('.getout').onclick = logOut;
@@ -177,4 +207,3 @@ if (document.title === 'Login') {
         }
     });
 }
-

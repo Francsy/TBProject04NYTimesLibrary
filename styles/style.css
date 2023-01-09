@@ -1,4 +1,9 @@
 
-#register, #favlist {
+#register, #favlist, #favbuttons {
     display: none;
+}
+
+.profileimg img {
+    max-height: 150px;
+    border-radius: 50%;
 }
