@@ -1,4 +1,3 @@
-
 //Firebase: 
 const firebaseConfig = {
     apiKey: "AIzaSyAfcU0w73LZE-R19NnH_vxNiiWLjGcSWvk",
@@ -8,13 +7,12 @@ const firebaseConfig = {
     messagingSenderId: "950393658023",
     appId: "1:950393658023:web:065726245adb7871f3d982"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-
 let userAuth = false;
 
 //Listener para saber que usuario está logeado:
+//Meter en async awayt??
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         console.log(`Está en el sistema:${user.email} ${user.uid}`);
@@ -24,7 +22,71 @@ firebase.auth().onAuthStateChanged(function (user) {
     }
 });
 
-//Pintado de listas
+//Función para logearse:
+const loginUser = (email, password) => {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((credential) => {
+            let user = credential.user;
+            console.log(`${user.email} está en el sistema (ID: ${user.uid})`)
+            alert(`${user.email} está en el sistema (ID: ${user.uid})`)
+            console.log('USER', user)
+        })
+        .catch((error) => {
+            console.log(error.code);
+            console.log(error.message)
+        })
+}
+
+//Función para deslogearse:
+const logOut = () => {
+    let user = firebase.auth().currentUser;
+    firebase.auth().signOut()
+        .then(() => {
+            console.log(user.mail + 'is out')
+        })
+        .catch((error) => {
+            console.log('Error: ' + error)
+        });
+    location.reload();
+}
+
+//Función que crea nuevo usuario:
+const createUser = (email, password) => {
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((credential) => {
+            let user = credential.user;
+            console.log(`${user.email} registrado con ID: ${user.uid}`)
+            alert(`registrado ${user.email} con ID ${user.uid}`)
+            db.collection('users')
+                .add({
+                    id: user.uid,
+                    email: user.email
+                })
+                .then((userDoc) => console.log(`New user document with ID: ${user.uid}`))
+                .catch((error) => console.error("Error adding document: ", error))
+        })
+        .catch((error) => {
+            console.log("Error" + error.message)
+        });
+};
+
+// Función para añadir favorito a firebase collection
+function addFav(userID, bookObject) {
+    db.collection('users')
+        .where('id', '==', userID)
+        .get()
+        .then((snapshot) => {
+            snapshot.forEach((doc) => {
+                if (!doc.data().hasOwnProperty('favs')) {
+                    doc.ref.update({ favs: [bookObject] });
+                } else {
+                    doc.ref.update({ favs: doc.data().favs.concat(bookObject) });
+                }
+            });
+        });
+}
+
+//Funciones pintado de listas
 const section = document.getElementById('list');
 const loadAnimation = () => section.innerHTML = `<div><img id="load" src="./assets/loading.gif" alt="loading..."></div>`;
 const getDataLists = async () => {
@@ -53,70 +115,37 @@ const createBooksList = async (listCode) => {
     booksList['books'].forEach((book, i) => section.innerHTML += `<div><h2>#${book.rank} ${book.title}</h2><img src="${book.book_image}" alt="book cover"><p>Weeks on list: ${book.weeks_on_list}</p><p>${book.description}</p><a href="${book.amazon_product_url}" target="_blank"><button>BUY!</button></a><button id="fav${i}">&#9829</button></div>`)
     document.getElementById('back-button').onclick = createMainList;
     booksList['books'].forEach((book, i) => document.getElementById(`fav${i}`).addEventListener('click', () => {
-        let bookDetails = {rank: book.rank, title: book.title, image: book.book_image, weeks: book.weeks_on_list, description: book.description, amazon: book.amazon_product_url};
+        let bookDetails = { amazon: book.amazon_product_url, description: book.description, image: book.book_image, title: book.title };
         console.log(bookDetails)
+        addFav(firebase.auth().currentUser.uid, bookDetails)
     }))
 }
-
-//Función que crea nuevo usuario:
-const createUser = (email, password) => {
-    firebase.auth().createUserWithEmailAndPassword(email,password)
-        .then((credential) => {
-            let user = credential.user;
-            console.log(`${user.email} registrado con ID: ${user.uid}`)
-            alert(`registrado ${user.email} con ID ${user.uid}`)
-            db.collection('users')
-                .add({
-                    id: user.uid,
-                    email: user.email
-                })
-                .then((userDoc) => console.log(`New user document with ID: ${user.uid}`))
-                .catch((error) => console.error("Error adding document: ", error))
-        })
-        .catch((error) => {
-            console.log("Error" + error.message)
+const createFavList = (userID) => {
+    window.scrollTo(0, 0);
+    section.innerHTML = `<h1>TUS FAVORITOS</h1><button id="backf-button" type="button">&#60 BRING ME BACK!</button>`;
+    db.collection('users')
+        .where('id', '==', userID)
+        .get()
+        .then((snapshot) => {
+            snapshot.forEach((doc) => {
+                doc.data().favs.forEach((fav, i) => {
+                section.innerHTML += `<div><h2>#${i} ${fav.title}</h2><img src="${fav.image}" alt="book cover"><p>${fav.description}</p><a href="${fav.amazon}" target="_blank"><button>BUY!</button></a><button id="rmv${i}">Remove</button></div>`
+                });
+            });
+            document.getElementById('backf-button').onclick = createMainList;
         });
-};
-//Función para logearse:
-const loginUser = (email, password) => {
-    firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((credential) => {
-            let user = credential.user;
-            console.log(`${user.email} está en el sistema (ID: ${user.uid})`)
-            alert(`${user.email} está en el sistema (ID: ${user.uid})`)
-            console.log('USER', user)
-        })
-        .catch((error) => {
-            console.log(error.code);
-            console.log(error.message)
-        })
 }
-
-//Función para deslogearse:
-const logOut = () => {
-    let user = firebase.auth().currentUser;
-    firebase.auth().signOut()
-        .then(() =>{
-            console.log(user.mail + 'is out')
-        })
-        .catch((error) => {
-            console.log('Error: ' + error)
-        });
-    location.reload();
-}
-
-//Función para añadir favorito
-// const addFav = () =>
-
 
 if (document.title === 'NYT Library') {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             document.getElementById('authaccess').innerHTML = `<button class="getout">Log out</button>`
             document.querySelector('.getout').onclick = logOut;
+            document.getElementById('favlist').style.display = "block";
         }
     });
     createMainList();
+    document.getElementById('favlist').addEventListener('click', ()=> createFavList(firebase.auth().currentUser.uid))
 }
 
 if (document.title === 'Login') {
@@ -129,7 +158,7 @@ if (document.title === 'Login') {
     const openButton = document.getElementById('openregistration');
     const registration = document.getElementById('register');
     openButton.onclick = () => registration.style.display = 'block';
-    document.getElementById('formreg').addEventListener('submit', (event) =>{
+    document.getElementById('formreg').addEventListener('submit', (event) => {
         event.preventDefault();
         let mail = event.target.elements.email.value;
         let password = event.target.elements.password1.value;
@@ -142,6 +171,10 @@ if (document.title === 'Login') {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             openButton.style.display = 'none';
+            document.querySelector('.getout').style.display = 'block';
+        } else {
+            document.querySelector('.getout').style.display = 'none';
         }
     });
 }
+
