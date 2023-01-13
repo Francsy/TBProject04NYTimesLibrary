@@ -12,13 +12,14 @@
 
 <body>
     <header>
+        <a href="../index.html"><button>&#60 Back</button></a>
         <div class="profileimg"></div>
-        <a href="../index.html"><button>&#60 BACK</button></a>
     </header>
     <main>
         <section>
-            <h2>LOGIN</h2>
+            
             <form id="formlog" action="#" method="post">
+                <h2>LOGIN</h2>
                 <label for="logemail">Your mail</label>
                 <input type="email" name="logemail" placeholder="Your mail...">
                 <label for="logpassword">Your password</label>
@@ -30,15 +31,16 @@
             <button id="openregistration">I don't have an account</button>
         </div>
         <section id="register">
-            <h2>SIGN UP</h2>
+            
             <form id="formreg" action="#" method="POST">
-                <label for="email">Mail</label>
+                <h2>SIGN UP</h2>
+                <label for="email">Mail:</label>
                 <input type="email" name="email" placeholder="Mail">
-                <label for="password1">Password</label>
+                <label for="password1">Password:</label>
                 <input type="password" name="password1" placeholder="Password...">
-                <label for="password2">Repeat password</label>
+                <label for="password2">Repeat password:</label>
                 <input type="password" name="password2" placeholder="Repeat password...">
-                <label for="file">Profile photo</label>
+                <label for="file">Profile photo:</label>
                 <input type="file" name="file" id="file" multiple/>
 
                 <input type="submit" value="Register">

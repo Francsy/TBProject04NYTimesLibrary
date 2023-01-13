@@ -1,12 +1,12 @@
-//Firebase: 
+//Firebase:
 const firebaseConfig = {
-    apiKey: "AIzaSyAfcU0w73LZE-R19NnH_vxNiiWLjGcSWvk",
-    authDomain: "nyt-library-82f86.firebaseapp.com",
-    projectId: "nyt-library-82f86",
-    storageBucket: "nyt-library-82f86.appspot.com",
-    messagingSenderId: "950393658023",
-    appId: "1:950393658023:web:065726245adb7871f3d982"
-}
+  apiKey: "AIzaSyAfcU0w73LZE-R19NnH_vxNiiWLjGcSWvk",
+  authDomain: "nyt-library-82f86.firebaseapp.com",
+  projectId: "nyt-library-82f86",
+  storageBucket: "nyt-library-82f86.appspot.com",
+  messagingSenderId: "950393658023",
+  appId: "1:950393658023:web:065726245adb7871f3d982"
+};
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -92,7 +92,7 @@ function addFav(userID, bookObject) {
 
 //Funciones pintado de listas
 const section = document.getElementById('list');
-const loadAnimation = () => section.innerHTML = `<div><img id="load" src="./assets/loading.gif" alt="loading..."></div>`;
+const loadAnimation = () => section.innerHTML = `<div id="load"><img src="./assets/loading.gif" alt="loading..."></div>`;
 const getDataLists = async () => {
     const rawDataMainList = await fetch('https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=hksRlq4zXFu3Itqjruc8igFoj22s4ZRR');
     const dataMainList = await rawDataMainList.json();
@@ -118,8 +118,8 @@ const createBooksList = async (listCode) => {
     window.scrollTo(0, 0);
     loadAnimation();
     const booksList = await getDataBooks(listCode);
-    section.innerHTML = `<h1>${booksList.list_name}</h1><button id="back-button" type="button">&#60 BRING ME BACK!</button>`;
-    booksList['books'].forEach((book, i) => section.innerHTML += `<div><h2>#${book.rank} ${book.title}</h2><img src="${book.book_image}" alt="book cover"><p>Weeks on list: ${book.weeks_on_list}</p><p>${book.description}</p><a href="${book.amazon_product_url}" target="_blank"><button>BUY!</button></a><button class="favbuttons" id="fav${i}">&#9829</button></div>`)
+    section.innerHTML = `<button id="back-button" type="button">&#60 BRING ME BACK!</button><h1>${booksList.list_name}</h1>`;
+    booksList['books'].forEach((book, i) => section.innerHTML += `<div><h2>#${book.rank} ${book.title}</h2><img src="${book.book_image}" alt="book cover"><p>Weeks on list: ${book.weeks_on_list}</p><p>${book.description}</p><div class="books-buttons"><a href="${book.amazon_product_url}" target="_blank"><button>BUY!</button></a><button class="favbuttons" id="fav${i}">&#9829</button></div></div>`)
     document.getElementById('back-button').onclick = createMainList;
     booksList['books'].forEach((book, i) => document.getElementById(`fav${i}`).addEventListener('click', () => {
         let bookDetails = { amazon: book.amazon_product_url, description: book.description, image: book.book_image, title: book.title };
@@ -131,14 +131,16 @@ const createBooksList = async (listCode) => {
 
 const createFavList = (userID) => {
     window.scrollTo(0, 0);
-    section.innerHTML = `<h1>TUS FAVORITOS</h1><button id="backf-button" type="button">&#60 BRING ME BACK!</button>`;
+    loadAnimation();
+    section.innerHTML = `<h1>YOUR FAVOURITE BOOKS</h1><button id="backf-button" type="button">&#60 BRING ME BACK!</button>`;
     db.collection('users')
         .where('id', '==', userID)
         .get()
         .then((snapshot) => {
             snapshot.forEach((doc) => {
+                // if (doc.data().favs)
                 doc.data().favs.forEach((fav, i) => {
-                section.innerHTML += `<div><h2>#${i} ${fav.title}</h2><img src="${fav.image}" alt="book cover"><p>${fav.description}</p><a href="${fav.amazon}" target="_blank"><button>BUY!</button></a><button id="rmv${i}">Remove</button></div>`
+                section.innerHTML += `<div><h2>#${i} ${fav.title}</h2><img src="${fav.image}" alt="book cover"><p>${fav.description}</p><div class="books-buttons"><a href="${fav.amazon}" target="_blank"><button>BUY!</button></a><button id="rmv${i}">Remove</button></div></div>`
                 });
             });
             document.getElementById('backf-button').onclick = createMainList;
@@ -193,7 +195,9 @@ if (document.title === 'Login') {
         let password = event.target.elements.password1.value;
         let checkPass = event.target.elements.password2.value;
         let file = event.target.elements.file.files[0];
-        password === checkPass ? createUser(mail, password, file) : alert('Error: you put differents passwords')
+        let newName = file['name'].split(' ').join('-');
+        let fileMod = new File([file], newName);
+        password === checkPass ? createUser(mail, password, fileMod) : alert('Error: you put differents passwords')
     })
     document.getElementById('outdiv').innerHTML = `<button class="getout">Log out</button>`;
     document.querySelector('.getout').onclick = logOut;
