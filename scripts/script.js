@@ -84,7 +84,12 @@ function addFav(userID, bookObject) {
                 if (!doc.data().hasOwnProperty('favs')) {
                     doc.ref.update({ favs: [bookObject] });
                 } else {
-                    doc.ref.update({ favs: doc.data().favs.concat(bookObject) });
+                    let arrfavs = doc.data().favs;
+                    if (arrfavs.some(item => item.title === bookObject.title)){
+                        alert("This book is already in your favourite list");
+                    } else {
+                        doc.ref.update({ favs: arrfavs.concat(bookObject) });
+                    }
                 }
             });
         });
