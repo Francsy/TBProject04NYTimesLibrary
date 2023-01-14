@@ -33,7 +33,6 @@ header {
 
 header * {
     margin: 5px;
-
 }
 
 .profileimg img {
@@ -88,7 +87,14 @@ main img {
     width: 95%;
 }
 
-#list > div {
+.listsection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.listsection>div {
     display: flex;
     width: 90%;
     flex-direction: column;
@@ -101,7 +107,7 @@ main img {
 }
 
 
-#list div h2 {
+.listsection div h2 {
     background-color: var(--dark);
     color: var(--lightbg);
     margin-top: 0px;
@@ -109,7 +115,7 @@ main img {
     padding: 5px 0px;
 }
 
-#list div img {
+.listsection div img {
     width: 80%;
 }
 
@@ -136,7 +142,7 @@ button:hover {
     margin: auto 10px;
     padding: 10px;
     width: 90px;
-    
+
 }
 
 form {
@@ -175,6 +181,39 @@ input[type="submit"]:hover {
 
 
 
-@media screen and (min-width: 768px) and (max-width: 1366px) {}
+@media screen and (min-width: 768px) and (max-width: 1366px) {
+
+    * {
+        font-size: 1.1em;
+    }
+
+    header {
+        justify-content: flex-start;
+        height: 150px;
+        flex-direction: row-reverse;
+    }
+    header * {
+        margin: 5px 10px;
+    }
+    .profileimg img {
+        width: 100px;
+        height: 100px;
+        margin-right: 30px;
+    }
+    header button {
+        padding: 15px 20px;
+        font-size: 1.1 em;
+    }
+    main {
+        margin-top: 180px;
+    }
+    main img {
+        margin: 40px auto
+    }
+
+    
+    
+
+}
 
 @media screen and (min-width: 1366px) {}

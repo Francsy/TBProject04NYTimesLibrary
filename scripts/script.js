@@ -108,8 +108,9 @@ const createMainList = async () => {
     window.scrollTo(0, 0);
     loadAnimation();
     const listsArray = await getDataLists();
-    section.innerHTML = '<h1>BESTSELLERS</h1>';
-    listsArray.forEach((list, i) => section.innerHTML += `<div><h2>${list.display_name}</h2><p>Oldest book: ${list.oldest_published_date}</p><p>Newest book: ${list.newest_published_date}</p><p>Updated: ${list.updated}</p><button id="button${i}"type="button">BRING ME IN!</button></div>`);
+    section.innerHTML = '<h1>BESTSELLERS</h1><section class="listsection"></section>';
+
+    listsArray.forEach((list, i) => document.querySelector('.listsection').innerHTML += `<div><h2>${list.display_name}</h2><p>Oldest book: ${list.oldest_published_date}</p><p>Newest book: ${list.newest_published_date}</p><p>Updated: ${list.updated}</p><button id="button${i}"type="button">BRING ME IN!</button></div>`);
     listsArray.forEach((list, i) => document.getElementById(`button${i}`).addEventListener('click', () => createBooksList(list.list_name_encoded)));
 }
 
@@ -123,8 +124,8 @@ const createBooksList = async (listCode) => {
     window.scrollTo(0, 0);
     loadAnimation();
     const booksList = await getDataBooks(listCode);
-    section.innerHTML = `<button id="back-button" type="button">&#60 BRING ME BACK!</button><h1>${booksList.list_name}</h1>`;
-    booksList['books'].forEach((book, i) => section.innerHTML += `<div><h2>#${book.rank} ${book.title}</h2><img src="${book.book_image}" alt="book cover"><p>Weeks on list: ${book.weeks_on_list}</p><p>${book.description}</p><div class="books-buttons"><a href="${book.amazon_product_url}" target="_blank"><button>BUY!</button></a><button class="favbuttons" id="fav${i}">&#9829</button></div></div>`)
+    section.innerHTML = `<button id="back-button" type="button">&#60 BRING ME BACK!</button><h1>${booksList.list_name}</h1><section class="listsection"></section>`;
+    booksList['books'].forEach((book, i) => document.querySelector('.listsection').innerHTML += `<div><h2>#${book.rank} ${book.title}</h2><img src="${book.book_image}" alt="book cover"><p>Weeks on list: ${book.weeks_on_list}</p><p>${book.description}</p><div class="books-buttons"><a href="${book.amazon_product_url}" target="_blank"><button>BUY!</button></a><button class="favbuttons" id="fav${i}">&#9829</button></div></div>`)
     document.getElementById('back-button').onclick = createMainList;
     booksList['books'].forEach((book, i) => document.getElementById(`fav${i}`).addEventListener('click', () => {
         let bookDetails = { amazon: book.amazon_product_url, description: book.description, image: book.book_image, title: book.title };
@@ -137,7 +138,7 @@ const createBooksList = async (listCode) => {
 const createFavList = (userID) => {
     window.scrollTo(0, 0);
     loadAnimation();
-    section.innerHTML = `<h1>YOUR FAVOURITE BOOKS</h1><button id="backf-button" type="button">&#60 BRING ME BACK!</button>`;
+    section.innerHTML = `<h1>YOUR FAVOURITE BOOKS</h1><button id="backf-button" type="button">&#60 BRING ME BACK!</button><section class="listsection"></section>`;
     db.collection('users')
         .where('id', '==', userID)
         .get()
@@ -145,7 +146,7 @@ const createFavList = (userID) => {
             snapshot.forEach((doc) => {
                 if (doc.data().favs[0]) {
                     doc.data().favs.forEach((fav, i) => {
-                        section.innerHTML += `<div><h2>#${i+1} ${fav.title}</h2><img src="${fav.image}" alt="book cover"><p>${fav.description}</p><div class="books-buttons"><a href="${fav.amazon}" target="_blank"><button>BUY!</button></a><button id="rmv${i}">Remove</button></div></div>`
+                        document.querySelector('.listsection').innerHTML += `<div><h2>#${i+1} ${fav.title}</h2><img src="${fav.image}" alt="book cover"><p>${fav.description}</p><div class="books-buttons"><a href="${fav.amazon}" target="_blank"><button>BUY!</button></a><button id="rmv${i}">Remove</button></div></div>`
                         
                     });
                     doc.data().favs.forEach((fav, i) => {
