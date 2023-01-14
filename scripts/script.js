@@ -138,13 +138,22 @@ const createFavList = (userID) => {
         .get()
         .then((snapshot) => {
             snapshot.forEach((doc) => {
-                if (doc.data().favs) {
+                if (doc.data().favs[0]) {
                     doc.data().favs.forEach((fav, i) => {
-                        section.innerHTML += `<div><h2>#${i} ${fav.title}</h2><img src="${fav.image}" alt="book cover"><p>${fav.description}</p><div class="books-buttons"><a href="${fav.amazon}" target="_blank"><button>BUY!</button></a><button id="rmv${i}">Remove</button></div></div>`
+                        section.innerHTML += `<div><h2>#${i+1} ${fav.title}</h2><img src="${fav.image}" alt="book cover"><p>${fav.description}</p><div class="books-buttons"><a href="${fav.amazon}" target="_blank"><button>BUY!</button></a><button id="rmv${i}">Remove</button></div></div>`
+                        
                     });
+                    doc.data().favs.forEach((fav, i) => {
+                    document.getElementById(`rmv${i}`).addEventListener('click', () => {
+                        db.collection('users').doc(doc.id).update({favs: firebase.firestore.FieldValue.arrayRemove(doc.data().favs[i])});
+                        console.log(`${i} was deleted`)
+                        createFavList(firebase.auth().currentUser.uid)
+                    })
+                }) 
                 } else {
                     alert("You have to add at least one book to your list")
                 }
+            
             });
             document.getElementById('backf-button').onclick = createMainList;
         });
