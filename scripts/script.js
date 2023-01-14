@@ -75,7 +75,7 @@ const createUser = (email, password, file) => {
 }
 
 // Función para añadir favorito a firebase collection
-function addFav(userID, bookObject) {
+const addFav = (userID, bookObject) => {
     db.collection('users')
         .where('id', '==', userID)
         .get()
