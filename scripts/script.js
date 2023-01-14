@@ -1,11 +1,11 @@
 //Firebase:
 const firebaseConfig = {
-  apiKey: "AIzaSyAfcU0w73LZE-R19NnH_vxNiiWLjGcSWvk",
-  authDomain: "nyt-library-82f86.firebaseapp.com",
-  projectId: "nyt-library-82f86",
-  storageBucket: "nyt-library-82f86.appspot.com",
-  messagingSenderId: "950393658023",
-  appId: "1:950393658023:web:065726245adb7871f3d982"
+    apiKey: "AIzaSyAfcU0w73LZE-R19NnH_vxNiiWLjGcSWvk",
+    authDomain: "nyt-library-82f86.firebaseapp.com",
+    projectId: "nyt-library-82f86",
+    storageBucket: "nyt-library-82f86.appspot.com",
+    messagingSenderId: "950393658023",
+    appId: "1:950393658023:web:065726245adb7871f3d982"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -71,7 +71,7 @@ const createUser = (email, password, file) => {
         .catch((error) => {
             console.log("Error" + error.message)
         });
-        firebase.storage().ref().child(`${email}-${file.name}`).put(file)
+    firebase.storage().ref().child(`${email}-${file.name}`).put(file)
 }
 
 // Función para añadir favorito a firebase collection
@@ -126,7 +126,7 @@ const createBooksList = async (listCode) => {
         console.log(bookDetails)
         addFav(firebase.auth().currentUser.uid, bookDetails)
     }))
-    booksList['books'].forEach((book, i) => firebase.auth().onAuthStateChanged((user) => !user ? document.getElementById(`fav${i}`).style.display = 'none': document.getElementById(`fav${i}`).style.display = 'inline'))
+    booksList['books'].forEach((book, i) => firebase.auth().onAuthStateChanged((user) => !user ? document.getElementById(`fav${i}`).style.display = 'none' : document.getElementById(`fav${i}`).style.display = 'inline'))
 }
 
 const createFavList = (userID) => {
@@ -138,10 +138,13 @@ const createFavList = (userID) => {
         .get()
         .then((snapshot) => {
             snapshot.forEach((doc) => {
-                // if (doc.data().favs)
-                doc.data().favs.forEach((fav, i) => {
-                section.innerHTML += `<div><h2>#${i} ${fav.title}</h2><img src="${fav.image}" alt="book cover"><p>${fav.description}</p><div class="books-buttons"><a href="${fav.amazon}" target="_blank"><button>BUY!</button></a><button id="rmv${i}">Remove</button></div></div>`
-                });
+                if (doc.data().favs) {
+                    doc.data().favs.forEach((fav, i) => {
+                        section.innerHTML += `<div><h2>#${i} ${fav.title}</h2><img src="${fav.image}" alt="book cover"><p>${fav.description}</p><div class="books-buttons"><a href="${fav.amazon}" target="_blank"><button>BUY!</button></a><button id="rmv${i}">Remove</button></div></div>`
+                    });
+                } else {
+                    alert("You have to add at least one book to your list")
+                }
             });
             document.getElementById('backf-button').onclick = createMainList;
         });
@@ -149,22 +152,22 @@ const createFavList = (userID) => {
 
 const getProfileImg = (userID) => {
     db.collection('users')
-    .where('id', '==', userID)
-    .get()
-    .then((snapshot) => {
-        snapshot.forEach((doc) => {
-            let email = doc.data().email
-            let imgUrl = doc.data().profile
-            firebase.storage().ref().child(`${email}-${imgUrl}`)
-            .getDownloadURL()
-            .then(function (url) {
-                document.querySelector(".profileimg").innerHTML = `<img src="${url}">`
-              })
-              .catch(function (error) {
-                console.log("error encountered with the profile img");
-              });
+        .where('id', '==', userID)
+        .get()
+        .then((snapshot) => {
+            snapshot.forEach((doc) => {
+                let email = doc.data().email
+                let imgUrl = doc.data().profile
+                firebase.storage().ref().child(`${email}-${imgUrl}`)
+                    .getDownloadURL()
+                    .then(function (url) {
+                        document.querySelector(".profileimg").innerHTML = `<img src="${url}">`
+                    })
+                    .catch(function (error) {
+                        console.log("error encountered with the profile img");
+                    });
+            });
         });
-    });
 }
 
 if (document.title === 'NYT Library') {
@@ -173,10 +176,10 @@ if (document.title === 'NYT Library') {
             document.getElementById('authaccess').innerHTML = `<button class="getout">Log out</button>`
             document.querySelector('.getout').onclick = logOut;
             document.getElementById('favlist').style.display = "block";
-        } 
+        }
     });
     createMainList();
-    document.getElementById('favlist').addEventListener('click', ()=> createFavList(firebase.auth().currentUser.uid))
+    document.getElementById('favlist').addEventListener('click', () => createFavList(firebase.auth().currentUser.uid))
 }
 
 if (document.title === 'Login') {
