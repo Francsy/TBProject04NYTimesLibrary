@@ -4,7 +4,7 @@
 }
 
 * {
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: var(--dark);
 }
 
@@ -135,7 +135,7 @@ button:hover {
 .books-buttons button {
     margin: auto 10px;
     padding: 10px;
-    width: 70px;
+    width: 90px;
     
 }
 
@@ -166,7 +166,6 @@ input[type="submit"]:hover {
 #backf-button {
     margin-bottom: 20px;
 }
-
 
 #register,
 #favlist,

@@ -222,7 +222,7 @@ if (document.title === 'Login') {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             openButton.style.display = 'none';
-            document.querySelector('.getout').style.display = 'block';
+            document.querySelector('.getout').style.display = 'inline';
         } else {
             document.querySelector('.getout').style.display = 'none';
         }
