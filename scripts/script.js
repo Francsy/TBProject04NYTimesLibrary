@@ -151,7 +151,7 @@ const createFavList = (userID) => {
                     })
                 }) 
                 } else {
-                    alert("You have to add at least one book to your list")
+                    section.innerHTML += "<h2>You have to add at least one book to your list</h2>"
                 }
             
             });
