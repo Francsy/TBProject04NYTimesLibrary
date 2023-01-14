@@ -1,0 +1,181 @@
+:root {
+    --dark: #31081F;
+    --lightbg: #F9FBF2;
+}
+
+* {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color: var(--dark);
+}
+
+
+
+body {
+    width: 100%;
+    justify-content: center;
+    background-color: var(--lightbg);
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: space-between;
+    text-align: center;
+    background-color: var(--dark);
+    align-items: center;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    height: 100px;
+}
+
+header * {
+    margin: 5px;
+
+}
+
+.profileimg img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+header button {
+    background-color: var(--dark);
+    color: var(--lightbg);
+    padding: 10px 5px;
+    border-radius: 10px;
+    border: 1px solid var(--lightbg);
+    font-size: 20px;
+}
+
+header button:hover {
+    background-color: var(--lightbg);
+    color: var(--dark);
+    cursor: pointer;
+}
+
+main {
+    text-align: center;
+    margin-top: 130px;
+}
+
+main img {
+    max-width: 90%;
+    display: block;
+    margin: 20px auto;
+}
+
+#list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#list button {
+    padding: 5px;
+    border-radius: 10px;
+}
+
+#list h1 {
+    color: var(--dark);
+}
+
+#list p {
+    width: 95%;
+}
+
+#list > div {
+    display: flex;
+    width: 90%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 1px solid var(--dark);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+
+#list div h2 {
+    background-color: var(--dark);
+    color: var(--lightbg);
+    margin-top: 0px;
+    width: 100%;
+    padding: 5px 0px;
+}
+
+#list div img {
+    width: 80%;
+}
+
+button {
+    background-color: var(--dark);
+    color: var(--lightbg);
+}
+
+button:hover {
+    background-color: var(--lightbg);
+    color: var(--dark);
+    cursor: pointer;
+}
+
+.books-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: space-around;
+    align-items: center;
+}
+
+.books-buttons button {
+    margin: auto 10px;
+    padding: 10px;
+    width: 70px;
+    
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin: 5% 18%;
+}
+
+input,
+label {
+    margin: 10px 0px;
+}
+
+input[type="submit"] {
+    background-color: var(--lightbg);
+    color: var(--dark);
+    padding: 5px;
+    border: solid var(--dark);
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: var(--dark);
+    color: var(--lightbg);
+}
+
+#backf-button {
+    margin-bottom: 20px;
+}
+
+
+#register,
+#favlist,
+#favbuttons {
+    display: none;
+}
+
+
+
+@media screen and (min-width: 768px) and (max-width: 1366px) {}
+
+@media screen and (min-width: 1366px) {}

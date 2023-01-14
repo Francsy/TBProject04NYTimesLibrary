@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../styles/normalize.css">
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+
+<body>
+    <header>
+        <a href="../index.html"><button>&#60 Back</button></a>
+        <div class="profileimg"></div>
+    </header>
+    <main>
+        <section>
+            
+            <form id="formlog" action="#" method="post">
+                <h2>LOGIN</h2>
+                <label for="logemail">Your mail</label>
+                <input type="email" name="logemail" placeholder="Your mail...">
+                <label for="logpassword">Your password</label>
+                <input type="password" name="logpassword" placeholder="Your password...">
+                <input type="submit" value="Get in">
+            </form>
+        </section>
+        <div>
+            <button id="openregistration">I don't have an account</button>
+        </div>
+        <section id="register">
+            
+            <form id="formreg" action="#" method="POST">
+                <h2>SIGN UP</h2>
+                <label for="email">Mail:</label>
+                <input type="email" name="email" placeholder="Mail">
+                <label for="password1">Password:</label>
+                <input type="password" name="password1" placeholder="Password...">
+                <label for="password2">Repeat password:</label>
+                <input type="password" name="password2" placeholder="Repeat password...">
+                <label for="file">Profile photo:</label>
+                <input type="file" name="file" id="file" multiple/>
+
+                <input type="submit" value="Register">
+            </form>
+        </section>
+        <div id="outdiv"></div>
+
+    </main>
+    <footer></footer>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-storage.js"></script>
+    <script src="../scripts/script.js"></script>
+</body>
+
+</html>
