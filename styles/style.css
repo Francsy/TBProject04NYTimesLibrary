@@ -217,6 +217,10 @@ input[type="submit"]:hover {
     header * {
         margin: 5px 15px;
     }
+
+    header > a > button {
+       margin-right: 50px; 
+    }
     .profileimg img {
         width: 100px;
         height: 100px;
@@ -315,19 +319,26 @@ input[type="submit"]:hover {
     } 
 
     
-
-    /* .divlist
-
-    
-    .divbook { 
-        width: 20%;
-        margin: 20px;     
+    form {
+        display: flex;
+        flex-direction: column;
+        margin: 5% 30%;
+        font-size: 1.5em;
     }
-    .divfav */
 
+    form > h2 {
+        font-size: 1.3em;
+    }
 
+    #openregistration {
+        font-size: 1.5em;
+    }
     
 
 }
 
-@media screen and (min-width: 1366px) {}
+@media screen and (min-width: 1366px) {
+
+
+    
+}

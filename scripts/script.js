@@ -206,7 +206,7 @@ if (document.title === 'Login') {
     })
     const openButton = document.getElementById('openregistration');
     const registration = document.getElementById('register');
-    openButton.onclick = () => registration.style.display = 'block';
+    openButton.onclick = () => registration.style.display === 'block' ? registration.style.display = 'none' : registration.style.display = 'block'
     document.getElementById('formreg').addEventListener('submit', (event) => {
         event.preventDefault();
         let mail = event.target.elements.email.value;
