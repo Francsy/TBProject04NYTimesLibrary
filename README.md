@@ -1,7 +1,5 @@
 # TBProject04NYTimesLibrary
 
-# TBProject04NYTimesLibrary
-
 En esta web podrás acceder a las listas de libros más vendidos que están en la [API del NYTimes](https://developer.nytimes.com/apis).
 
 

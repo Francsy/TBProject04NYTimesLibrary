@@ -226,7 +226,7 @@ input[type="submit"]:hover {
     }
 
     header > a > button {
-       margin-right: 50px; 
+       margin-right: 0px; 
     }
     .profileimg img {
         width: 100px;
@@ -369,7 +369,7 @@ input[type="submit"]:hover {
     }
 
     header > a > button {
-       margin-right: 50px; 
+        margin-right: 0px; 
     }
 
     .profileimg img {
