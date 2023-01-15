@@ -66,6 +66,4 @@ Una vez dentro, podrás navegar por las listas viendo tu foto de perfil, tu list
 
 ### **Autor:**
 
-<br>
-
 [Francisco Vicente Hernández Ramírez](https://github.com/Francsy)
