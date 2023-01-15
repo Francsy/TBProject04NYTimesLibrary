@@ -45,10 +45,10 @@ Si no tienes cuenta podrás registrarte desplegando un formulario de registro al
 <table>
   <tr>
     <td>
-<img src="./assets/nytmobilefirst2.png" style="width:80%; height:auto;">
+<img src="./assets/nytmobilefirst2.png" style="width:300px; height:auto;">
 </td>
     <td>
-        <img src="./assets/nytmobilefirst.png" style="width:80%; height:auto;">
+        <img src="./assets/nytmobilefirst.png" style="width:300px; height:auto;">
     </td>
   </tr>
 </table>
