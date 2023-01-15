@@ -59,10 +59,9 @@ Tendrás que registrar tus email, contraseña y subir una foto de perfil.
 
 Una vez dentro, podrás navegar por las listas viendo tu foto de perfil, tu lista de favoritos y un botón para cerrar sesión en tu navegador. Podrás añadir favoritos y borrarlos.
 
-<br>
+
 
 [Pincha aquí para entrar a la biblioteca](https://francsy.github.io/TBProject04NYTimesLibrary/)
-
 
 ### **Autor:**
 
