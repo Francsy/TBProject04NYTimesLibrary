@@ -34,7 +34,8 @@ const loginUser = (email, password) => {
         })
         .catch((error) => {
             console.log(error.code);
-            console.log(error.message)
+            console.log(error.message);
+            Toastify({ text: error.message, duration: 4000, style: { background: "red", color: 'black', }, position: 'left', close: true }).showToast();
         })
 }
 
@@ -43,7 +44,7 @@ const logOut = () => {
     let user = firebase.auth().currentUser;
     firebase.auth().signOut()
         .then(() => {
-            Toastify({ text: `See you soon ${user.email}!!!`, duration: 4000, style: { background: "#77AEBB", color: 'black', fontsize: '100px', }, position: 'left', close: true }).showToast();
+            Toastify({ text: `See you soon ${user.email}!!!`, duration: 4000, style: { background: "#77AEBB", color: 'black', }, position: 'left', close: true }).showToast();
             console.log(user.mail + 'is out')
         })
         .catch((error) => {
@@ -64,7 +65,8 @@ const createUser = (email, password, file) => {
                 .add({
                     id: user.uid,
                     email: user.email,
-                    profile: file.name
+                    profile: file.name,
+                    favs: []
                 })
                 .then((userDoc) => console.log(`New user document with ID: ${user.uid}`))
                 .catch((error) => {
@@ -134,8 +136,7 @@ const createBooksList = async (listCode) => {
     document.getElementById('back-button').onclick = createMainList;
     booksList['books'].forEach((book, i) => document.getElementById(`fav${i}`).addEventListener('click', () => {
         let bookDetails = { amazon: book.amazon_product_url, description: book.description, image: book.book_image, title: book.title };
-        console.log(bookDetails)
-        addFav(firebase.auth().currentUser.uid, bookDetails)
+        addFav(firebase.auth().currentUser.uid, bookDetails);
     }))
     booksList['books'].forEach((book, i) => firebase.auth().onAuthStateChanged((user) => !user ? document.getElementById(`fav${i}`).style.display = 'none' : document.getElementById(`fav${i}`).style.display = 'inline'))
 }
