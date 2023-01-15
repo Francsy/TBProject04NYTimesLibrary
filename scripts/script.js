@@ -10,11 +10,10 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-let userAuth = false;
+const section = document.getElementById('list');
 
 //Listener para saber que usuario está logeado:
-//Meter en async await??
-firebase.auth().onAuthStateChanged(function (user) {
+firebase.auth().onAuthStateChanged((user) => {
     if (user) {
         console.log(`Está en el sistema:${user.email} ${user.uid}`);
         getProfileImg(firebase.auth().currentUser.uid)
@@ -50,8 +49,8 @@ const logOut = () => {
         .catch((error) => {
             console.log('Error: ' + error)
         });
-        setTimeout(()=> location.reload(), 2000)
-    
+    setTimeout(() => location.reload(), 2000)
+
 }
 
 //Función que crea nuevo usuario:
@@ -93,7 +92,7 @@ const addFav = (userID, bookObject) => {
                 } else {
                     let arrfavs = doc.data().favs;
                     if (arrfavs.some(item => item.title === bookObject.title)) {
-                        Toastify({text: 'This book is already in your favourite list', duration: 4000, style: {background: "red", color: 'black', fontsize: '100px',}, position: 'left', close: true}).showToast()
+                        Toastify({ text: 'This book is already in your favourite list', duration: 4000, style: { background: "red", color: 'black', fontsize: '100px', }, position: 'left', close: true }).showToast()
                     } else {
                         doc.ref.update({ favs: arrfavs.concat(bookObject) });
                     }
@@ -102,8 +101,8 @@ const addFav = (userID, bookObject) => {
         });
 }
 
-//Funciones pintado de listas
-const section = document.getElementById('list');
+/* Funciones pintado de listas: */
+
 const loadAnimation = () => section.innerHTML = `<div id="load"><img src="./assets/loading.gif" alt="loading..."></div>`;
 const getDataLists = async () => {
     const rawDataMainList = await fetch('https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=hksRlq4zXFu3Itqjruc8igFoj22s4ZRR');
@@ -158,8 +157,8 @@ const createFavList = (userID) => {
                     doc.data().favs.forEach((fav, i) => {
                         document.getElementById(`rmv${i}`).addEventListener('click', () => {
                             db.collection('users').doc(doc.id).update({ favs: firebase.firestore.FieldValue.arrayRemove(doc.data().favs[i]) });
-                            console.log(`${i+1} was deleted`)
-                            Toastify({ text: `You removed the ${i+1} book!`, duration: 4000, style: { background: "#77AEBB", color: 'black', fontsize: '100px', }, position: 'left', close: true }).showToast();
+                            console.log(`${i + 1} was deleted`)
+                            Toastify({ text: `You removed the ${i + 1} book!`, duration: 4000, style: { background: "#77AEBB", color: 'black', fontsize: '100px', }, position: 'left', close: true }).showToast();
                             setTimeout(() => createFavList(firebase.auth().currentUser.uid), 500)
                         })
                     })
@@ -173,6 +172,7 @@ const createFavList = (userID) => {
         });
 }
 
+// Función para sacar la imagen de perfil:
 const getProfileImg = (userID) => {
     db.collection('users')
         .where('id', '==', userID)
@@ -192,6 +192,8 @@ const getProfileImg = (userID) => {
             });
         });
 }
+
+/* ----------------------- Código que controla lo que pasa en cada página  ----------------------- */
 
 if (document.title === 'NYT Library') {
     firebase.auth().onAuthStateChanged(function (user) {
