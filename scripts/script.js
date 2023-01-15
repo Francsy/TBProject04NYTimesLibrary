@@ -17,10 +17,9 @@ let userAuth = false;
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         console.log(`Está en el sistema:${user.email} ${user.uid}`);
-        userAuth = true;
         getProfileImg(firebase.auth().currentUser.uid)
     } else {
-        console.log("no hay usuarios en el sistema");
+        console.log("No hay usuarios en el sistema");
     }
 })
 
@@ -29,8 +28,8 @@ const loginUser = (email, password) => {
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((credential) => {
             let user = credential.user;
+            Toastify({ text: `Está en el sistema: ${user.email}`, duration: 4000, style: { background: "#77AEBB", color: 'black', fontsize: '100px', }, position: 'left', close: true }).showToast();
             console.log(`${user.email} está en el sistema (ID: ${user.uid})`)
-            alert(`${user.email} está en el sistema (ID: ${user.uid})`)
             console.log('USER', user)
         })
         .catch((error) => {
@@ -44,12 +43,14 @@ const logOut = () => {
     let user = firebase.auth().currentUser;
     firebase.auth().signOut()
         .then(() => {
+            Toastify({ text: `See you soon ${user.email}!!!`, duration: 4000, style: { background: "#77AEBB", color: 'black', fontsize: '100px', }, position: 'left', close: true }).showToast();
             console.log(user.mail + 'is out')
         })
         .catch((error) => {
             console.log('Error: ' + error)
         });
-    location.reload();
+        setTimeout(()=> location.reload(), 2000)
+    
 }
 
 //Función que crea nuevo usuario:
@@ -58,7 +59,7 @@ const createUser = (email, password, file) => {
         .then((credential) => {
             let user = credential.user;
             console.log(`${user.email} registrado con ID: ${user.uid}`)
-            alert(`registrado ${user.email} con ID ${user.uid}`)
+            Toastify({ text: `registrado ${user.email} con ID ${user.uid}`, duration: 4000, style: { background: "#77AEBB", color: 'black', fontsize: '100px', }, position: 'left', close: true }).showToast();
             db.collection('users')
                 .add({
                     id: user.uid,
@@ -66,7 +67,11 @@ const createUser = (email, password, file) => {
                     profile: file.name
                 })
                 .then((userDoc) => console.log(`New user document with ID: ${user.uid}`))
-                .catch((error) => console.error("Error adding document: ", error))
+                .catch((error) => {
+                    console.error("Error adding document: ", error);
+                    Toastify({ text: `Error adding document: ${error}`, duration: 4000, style: { background: "red", color: 'black', fontsize: '100px', }, position: 'left', close: true }).showToast();
+                }
+                )
         })
         .catch((error) => {
             console.log("Error" + error.message)
@@ -82,11 +87,11 @@ const addFav = (userID, bookObject) => {
         .then((snapshot) => {
             snapshot.forEach((doc) => {
                 if (!doc.data().hasOwnProperty('favs')) {
-                    doc.ref.update({ favs: [bookObject] });
+                    doc.ref.update({ favs: [bookObject] })
                 } else {
                     let arrfavs = doc.data().favs;
-                    if (arrfavs.some(item => item.title === bookObject.title)){
-                        alert("This book is already in your favourite list");
+                    if (arrfavs.some(item => item.title === bookObject.title)) {
+                        Toastify({text: 'This book is already in your favourite list', duration: 4000, style: {background: "red", color: 'black', fontsize: '100px',}, position: 'left', close: true}).showToast()
                     } else {
                         doc.ref.update({ favs: arrfavs.concat(bookObject) });
                     }
@@ -124,7 +129,7 @@ const createBooksList = async (listCode) => {
     window.scrollTo(0, 0);
     loadAnimation();
     const booksList = await getDataBooks(listCode);
-    section.innerHTML = `<button id="back-button" type="button">&#60 BRING ME BACK!</button><h1>${booksList.list_name}</h1><section class="listsection"></section>`;
+    section.innerHTML = `<h1>${booksList.list_name}</h1><button id="back-button" type="button">&#60 BRING ME BACK!</button><section class="listsection"></section>`;
     booksList['books'].forEach((book, i) => document.querySelector('.listsection').innerHTML += `<div class="bookdiv"><h2>#${book.rank} ${book.title}</h2><img src="${book.book_image}" alt="book cover"><p>Weeks on list: ${book.weeks_on_list}</p><p>${book.description}</p><div class="books-buttons"><a href="${book.amazon_product_url}" target="_blank"><button>BUY!</button></a><button class="favbuttons" id="fav${i}">&#9733;</button></div></div>`)
     document.getElementById('back-button').onclick = createMainList;
     booksList['books'].forEach((book, i) => document.getElementById(`fav${i}`).addEventListener('click', () => {
@@ -146,20 +151,22 @@ const createFavList = (userID) => {
             snapshot.forEach((doc) => {
                 if (doc.data().favs[0]) {
                     doc.data().favs.forEach((fav, i) => {
-                        document.querySelector('.listsection').innerHTML += `<div class="favdiv"><h2>#${i+1} ${fav.title}</h2><img src="${fav.image}" alt="book cover"><p>${fav.description}</p><div class="books-buttons"><a href="${fav.amazon}" target="_blank"><button>BUY!</button></a><button id="rmv${i}">&#128465;</button></div></div>`
-                        
+                        document.querySelector('.listsection').innerHTML += `<div class="favdiv"><h2>#${i + 1} ${fav.title}</h2><img src="${fav.image}" alt="book cover"><p>${fav.description}</p><div class="books-buttons"><a href="${fav.amazon}" target="_blank"><button>BUY!</button></a><button id="rmv${i}">&#128465;</button></div></div>`
+
                     });
                     doc.data().favs.forEach((fav, i) => {
-                    document.getElementById(`rmv${i}`).addEventListener('click', () => {
-                        db.collection('users').doc(doc.id).update({favs: firebase.firestore.FieldValue.arrayRemove(doc.data().favs[i])});
-                        console.log(`${i} was deleted`)
-                        createFavList(firebase.auth().currentUser.uid)
+                        document.getElementById(`rmv${i}`).addEventListener('click', () => {
+                            db.collection('users').doc(doc.id).update({ favs: firebase.firestore.FieldValue.arrayRemove(doc.data().favs[i]) });
+                            console.log(`${i+1} was deleted`)
+                            Toastify({ text: `You removed the ${i+1} book!`, duration: 4000, style: { background: "#77AEBB", color: 'black', fontsize: '100px', }, position: 'left', close: true }).showToast();
+                            setTimeout(() => createFavList(firebase.auth().currentUser.uid), 500)
+                        })
                     })
-                }) 
                 } else {
                     section.innerHTML += "<h2>You have to add at least one book to your list</h2>"
+                    Toastify({ text: 'Start adding some books to your personal list!!', duration: 4000, style: { background: "#77AEBB", color: 'black', fontsize: '100px', }, position: 'left', close: true }).showToast();
                 }
-            
+
             });
             document.getElementById('backf-button').onclick = createMainList;
         });
@@ -215,7 +222,7 @@ if (document.title === 'Login') {
         let file = event.target.elements.file.files[0];
         let newName = file['name'].split(' ').join('-');
         let fileMod = new File([file], newName);
-        password === checkPass ? createUser(mail, password, fileMod) : alert('Error: you put differents passwords')
+        password === checkPass ? createUser(mail, password, fileMod) : Toastify({ text: "Error: you put differents passwords", duration: 4000, style: { background: "#77AEBB", color: 'black', fontsize: '100px', }, position: 'left', close: true }).showToast();
     })
     document.getElementById('outdiv').innerHTML = `<button class="getout">Log out</button>`;
     document.querySelector('.getout').onclick = logOut;
