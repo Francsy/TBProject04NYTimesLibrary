@@ -1,12 +1,20 @@
 :root {
-    --dark: #31081F;
-    --lightbg: #F9FBF2;
+    /* --dark: #31081F; */
+     /* --lightbg: #F9FBF2; */
+    --dark: black;
+    --lightbg: #F7F5F2;
+    --darkheader: #252118;
+    --booky: white;
 }
 
 * {
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-family: Arial, Helvetica, sans-serif;
     color: var(--dark);
 }
+
+.toastify .toast-body {
+    color: black;
+  }
 
 
 
@@ -22,7 +30,7 @@ header {
     justify-content: center;
     align-content: space-between;
     text-align: center;
-    background-color: var(--dark);
+    background-color: var(--darkheader);
     align-items: center;
     width: 100%;
     position: fixed;
@@ -33,8 +41,8 @@ header {
 
 header * {
     margin: 5px;
-
 }
+
 
 .profileimg img {
     width: 60px;
@@ -45,7 +53,7 @@ header * {
 header button {
     background-color: var(--dark);
     color: var(--lightbg);
-    padding: 10px 5px;
+    padding: 5px 10px;
     border-radius: 10px;
     border: 1px solid var(--lightbg);
     font-size: 20px;
@@ -62,6 +70,20 @@ main {
     margin-top: 130px;
 }
 
+h1 {
+    font-size: 30px;
+    font-family: sans-serif, Arial, Helvetica;
+    font-weight: 500;
+}
+
+h2 {
+    font-size: 18px;
+    overflow: hidden;
+    box-sizing: border-box;
+    line-height: 2em;
+
+}
+
 main img {
     max-width: 90%;
     display: block;
@@ -76,19 +98,34 @@ main img {
 }
 
 #list button {
-    padding: 5px;
+    padding: 10px;
     border-radius: 10px;
+    font-size: 18px;
 }
 
 #list h1 {
     color: var(--dark);
+    margin: 30px 5px;
 }
 
-#list p {
+#back-button, #backfbutton {
+    margin-bottom: 30px;
+}
+
+
+.listsection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.listsection h2 {
     width: 95%;
 }
 
-#list > div {
+
+.listdiv, .bookdiv, .favdiv {
     display: flex;
     width: 90%;
     flex-direction: column;
@@ -98,19 +135,21 @@ main img {
     border: 1px solid var(--dark);
     padding-bottom: 20px;
     margin-bottom: 20px;
+    background-color: var(--booky) ;
 }
 
-
-#list div h2 {
+.listdiv h2, .bookdiv h2, .favdiv h2 {
     background-color: var(--dark);
     color: var(--lightbg);
     margin-top: 0px;
     width: 100%;
     padding: 5px 0px;
+
 }
 
-#list div img {
-    width: 80%;
+
+.bookdiv img, .favdiv img {
+    width: 70%;
 }
 
 button {
@@ -135,8 +174,8 @@ button:hover {
 .books-buttons button {
     margin: auto 10px;
     padding: 10px;
-    width: 70px;
-    
+    width: 90px;
+
 }
 
 form {
@@ -167,7 +206,6 @@ input[type="submit"]:hover {
     margin-bottom: 20px;
 }
 
-
 #register,
 #favlist,
 #favbuttons {
@@ -176,6 +214,290 @@ input[type="submit"]:hover {
 
 
 
-@media screen and (min-width: 768px) and (max-width: 1366px) {}
+@media screen and (min-width: 768px) and (max-width: 1366px) {
 
-@media screen and (min-width: 1366px) {}
+    header {
+        justify-content: flex-start;
+        height: 150px;
+        flex-direction: row-reverse;
+    }
+    header * {
+        margin: 5px 15px;
+    }
+
+    header > a > button {
+       margin-right: 50px; 
+    }
+    .profileimg img {
+        width: 100px;
+        height: 100px;
+        margin-right: 30px;
+    }
+    header button {
+        padding: 15px 25px;
+        font-size: 1.3em;
+    }
+    main {
+        margin-top: 200px;
+    }
+
+    h1 {
+        font-size: 3em;
+    }
+
+    main img {
+        margin: 40px auto
+    }
+
+    #list button {
+        padding: 20px;
+        font-size: 1.2em;
+    
+    }
+
+    #list h1 {
+        margin: 60px 10px 50px 10px;
+
+    }
+
+    #back-button, #backfbutton {
+        margin-bottom: 30px;
+    }
+
+    #list h2 {
+        font-size: 1.5em;
+    }
+
+    .listsection {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: stretch;
+    }
+
+    .listdiv, .bookdiv, .favdiv {
+        width: 40%;
+        margin: 20px;
+        justify-content: space-between;
+    }
+
+    .listdiv h2 {
+        height: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    }
+    .listdiv p {
+        height: 10%;
+    }
+    .listdiv button {
+        height: 20%;
+        margin-top: 10px;
+    }
+
+    .bookdiv h2, .favdiv h2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        margin-bottom: 0px;
+        height: 100px;
+        
+    }
+    .bookdiv img, .favdiv img {
+        margin: 20px 0px;
+        width: 50%;
+    }
+    .bookdiv > p:nth-child(1) {
+        margin: 0px;
+    }
+    .bookdiv > p:nth-child(2) {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       margin: 0px;
+    }
+
+    .bookdiv > div, .favdiv > div {
+        margin: 0px;
+    }
+ 
+    .favdiv p {
+        display: flex;
+       align-items: center;
+       justify-content: center;
+       margin: 25px 0px
+    }
+    .favdiv > div {
+        margin: 0px;
+    } 
+
+    
+    form {
+        display: flex;
+        flex-direction: column;
+        margin: 5% 30%;
+        font-size: 1.5em;
+    }
+
+    form > h2 {
+        font-size: 1.3em;
+    }
+
+    #openregistration {
+        font-size: 1.5em;
+    }
+    
+    #outdiv > button {
+        padding: 10px;
+        font-size: 1.2em;
+    }
+
+}
+
+@media screen and (min-width: 1366px) {
+
+    header {
+        justify-content: flex-start;
+        height: 140px;
+        flex-direction: row-reverse;
+    }
+
+    header * {
+        margin: 5px 15px;
+    }
+
+    header > a > button {
+       margin-right: 50px; 
+    }
+
+    .profileimg img {
+        width: 110px;
+        height: 110px;
+        margin-right: 30px;
+    }
+
+    header button {
+        padding: 15px 25px;
+        font-size: 1.3em;
+    }
+    main {
+        margin-top: 200px;
+    }
+
+    h1 {
+        font-size: 3.5em;
+    }
+
+    main img {
+        width: 60%;
+    }
+
+    #list button {
+        padding: 20px;
+        font-size: 1.2em;
+    }
+
+    #list h1 {
+        margin: 60px 10px 50px 10px;
+    }
+
+    #back-button, #backfbutton {
+        margin-bottom: 30px;
+    }
+
+    #list h2 {
+        font-size: 1.5em;
+        margin-bottom: 40px;
+    }
+
+    .listsection {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: stretch;
+        margin: 0px 20px;
+    }
+
+    .listdiv, .bookdiv, .favdiv {
+        width: 30%;
+        margin: 40px 15px;
+        justify-content: space-between;
+        min-width: 30%;
+    }
+
+
+    .listdiv h2 {
+        height: 50%;
+        padding: 0px 1px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .listdiv p {
+        height: 10%;
+    }
+    .listdiv button {
+        height: 20%;
+        margin-top: 10px;
+    }
+
+    .bookdiv h2, .favdiv h2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        margin-bottom: 0px;
+        height: 100px;
+        
+    }
+    .bookdiv img, .favdiv img {
+        margin: 20px 0px;
+        width: 45%;
+    }
+    .bookdiv > p:nth-child(1) {
+        margin: 0px;
+    }
+    .bookdiv > p:nth-child(2) {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       margin: 0px;
+    }
+
+    .bookdiv > div, .favdiv > div {
+        margin: 0px;
+    }
+ 
+    .favdiv p {
+        display: flex;
+       align-items: center;
+       justify-content: center;
+       margin: 25px 0px;
+    }
+    .favdiv > div {
+        margin: 0px;
+    } 
+
+    
+    form {
+        display: flex;
+        flex-direction: column;
+        margin: 5% 30%;
+        font-size: 1.5em;
+    }
+
+    form > h2 {
+        font-size: 1.3em;
+    }
+
+    #openregistration {
+        font-size: 1.5em;
+    }
+
+    #outdiv > button {
+        padding: 10px;
+        font-size: 1.2em;
+    }
+}
