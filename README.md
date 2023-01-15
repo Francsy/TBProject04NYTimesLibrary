@@ -5,7 +5,6 @@ En esta web podrás acceder a las listas de libros más vendidos que están en l
 
 ![NYT_logo](./assets/nyt.svg)
 
-<br>
 
 ### **Listas disponibles:**
 
@@ -25,18 +24,14 @@ La página presenta tres listas:
 
 <br>
 
-
-![NYT_logo](./assets/favlist.png)
-
+![fav_list](./assets/favlist.png)
 
 <br>
-
-
 
 
 Todas estas listas están en una única página SPA, con la que interactuar que incluye notificaciones implementadas con Toastify.
 
-<br>
+
 
 ### **Autenticación:**
 
@@ -68,7 +63,6 @@ Una vez dentro, podrás navegar por las listas viendo tu foto de perfil, tu list
 
 [Pincha aquí para entrar a la biblioteca](https://francsy.github.io/TBProject04NYTimesLibrary/)
 
-<br>
 
 ### **Autor:**
 
